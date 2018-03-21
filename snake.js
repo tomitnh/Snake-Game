@@ -4,18 +4,19 @@ class Snake {
 		this.yspeed = 0;
 		this.body = [];
 		this.body[0] = point;
+		this.color = 'white';
 	}
 
 	show () {
 		var canvas = document.getElementById('canvas');
 		var ctx = canvas.getContext('2d');
-		ctx.fillStyle = 'white';
+		ctx.fillStyle = this.color;
 
 		for (var i = 0; i < this.body.length; i++) {
 			ctx.fillRect(this.body[i].x, 
 				this.body[i].y, 
-				10, 
-				10);			
+				scl, 
+				scl);			
 		}
 	}
 
@@ -24,13 +25,24 @@ class Snake {
 		this.yspeed = vy;
 	}
 
+	isDead () {
+		var head = this.body[0];
+
+		for (var i = 1; i < this.body.length; i++) {
+			var b = this.body[i];
+			if (dist(head.x, head.y, b.x, b.y) < 1) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	eat (food) {
-		var a = this.body[0].x - food.x;
-		var b = this.body[0].y - food.y;
+		var head = this.body[0];
+		var d = dist(head.x, head.y, food.x, food.y);
 
-		var dist = Math.sqrt(a*a + b*b);
-
-		var eaten = dist < 5 ? true : false;
+		var eaten = d < 10 ? true : false;
 
 		if (eaten) {
 			// grow the snake
@@ -40,10 +52,10 @@ class Snake {
 			if (this.xspeed == 0) {
 				//snake was moving vertically
 				tail.x = head.x;
-				tail.y = head.y - this.yspeed;
+				tail.y = head.y - this.yspeed * scl;
 			} else {
 				tail.y = head.y;
-				tail.x = head.x - this.xspeed;
+				tail.x = head.x - this.xspeed * scl;
 			}
 
 			this.body[this.body.length] = tail;
@@ -61,8 +73,8 @@ class Snake {
 
 		var head = this.body[0];
 
-		head.x += this.xspeed;
-		head.y += this.yspeed;
+		head.x += this.xspeed * scl;
+		head.y += this.yspeed * scl;
 
 		// constrain x,y within the canvas border
 		var canvas = document.getElementById('canvas');
