@@ -66,26 +66,23 @@ class Snake {
 	}
 
 	update () {
+
+		// constrain x,y within the canvas border
+		var head = this.body[0];
+		var canvas = document.getElementById('canvas');
+		var x2 = head.x + this.xspeed * scl;
+		var y2 = head.y + this.yspeed * scl;
+		if (x2 <= -scl || x2 >= canvas.width || 
+			y2 <= -scl || y2 >= canvas.height) 
+			return;		// Stop the snake from slithering
+
+		// Slither
 		for (var i = this.body.length-1; i > 0; i--) {
 			var p = this.body[i-1];
 			this.body[i] = new Point(p.x,p.y);
 		}
 
-		var head = this.body[0];
-
 		head.x += this.xspeed * scl;
 		head.y += this.yspeed * scl;
-
-		// constrain x,y within the canvas border
-		var canvas = document.getElementById('canvas');
-		if (head.x < 0)
-			head.x = 0;
-		else if (head.x > canvas.width)
-			head.x = canvas.width;
-
-		if (head.y < 0)
-			head.y = 0;
-		else if (head.y > canvas.height)
-			head.y = canvas.height;
 	}
 }
